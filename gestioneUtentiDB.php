@@ -1,6 +1,10 @@
 <?php
 // Avvio della sessione e connessione al database
 session_start();
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit;
+}
 $mysqli = new mysqli("localhost", "root", "", "gestioneutenti");
 
 if ($mysqli->connect_error) {
@@ -92,10 +96,11 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
         <ul class="uk-navbar-nav">
                 <li><a href="gestioneUtenti.php" style="color:black">Home Page</a></li>
                 <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
-                <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
                 <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
                 <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
                 <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+                <li><a href="logout.php" style="color:black">Logout.php</a></li>
             </ul>
         </div>
         <div class="uk-navbar-right">

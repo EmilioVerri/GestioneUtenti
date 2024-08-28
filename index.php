@@ -1,7 +1,5 @@
 <?php
-// Avvio della sessione
 session_start();
-
 // Connessione al database
 $mysqli = new mysqli("localhost", "root", "", "gestioneutenti");
 
