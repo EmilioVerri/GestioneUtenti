@@ -4,12 +4,30 @@ session_start();
 if (!isset($_SESSION['id'])) {
     header('Location: index.php');
     exit;
-}
-$mysqli = new mysqli("localhost", "root", "", "gestioneutenti");
+}else {
+    $mysqli = new mysqli("localhost", "root", "", "gestioneutenti");
+    if ($mysqli->connect_error) {
+        die("Connessione fallita: " . $mysqli->connect_error);
+    }
+    $idUtente = $_SESSION['id'];
 
-if ($mysqli->connect_error) {
-    die("Connessione fallita: " . $mysqli->connect_error);
+    $stmt = $mysqli->prepare("SELECT permessi FROM loginutente WHERE id = ?");
+    $stmt->bind_param('s', $idUtente);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($permessi);
+    $stmt->fetch();
+
+
+    if($permessi!="admin"){
+        header('Location: index.php');
+        exit;
+    }else{
+
+    }
 }
+
+
 
 // Funzione per hashare la password
 function hashPassword($password) {

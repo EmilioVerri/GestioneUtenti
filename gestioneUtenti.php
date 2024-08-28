@@ -83,16 +83,16 @@ $stmt->fetch();
                     } else {
 
                         ?>
-                        <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
-                        <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                        <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
+                        <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+
 
                         <?php
                     }
 
                     ?>
-                    <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
-
-                    <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+                    <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
+                    <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
                     <li><a href="logout.php" style="color:black">Logout.php</a></li>
                 </ul>
             </div>
@@ -129,28 +129,26 @@ $stmt->fetch();
             }
 
             ?>
-
-
-
-            <!-- Card 3 -->
+            <!-- Card 5 -->
             <div>
-                <a href="inserimentoModificaDati.php">
+                <a href="calendarioMensile.php">
                     <div class="uk-card uk-card-hover uk-card-default uk-card-body">
-                        <h3 class="uk-card-title">Inserimento/Modifica Dati</h3>
+                        <h3 class="uk-card-title">Calendario Mensile</h3>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 6 -->
+            <div>
+                <a href="calendarioRichieste.php">
+                    <div class="uk-card uk-card-hover uk-card-default uk-card-body">
+                        <h3 class="uk-card-title">Calendario Richieste</h3>
                     </div>
                 </a>
             </div>
 
 
 
-            <!-- Card 4 -->
-            <div>
-                <a href="inserimentoRichieste.php">
-                    <div class="uk-card uk-card-hover uk-card-default uk-card-body">
-                        <h3 class="uk-card-title">Inserimento Richieste</h3>
-                    </div>
-                </a>
-            </div>
 
 
 
@@ -158,20 +156,22 @@ $stmt->fetch();
             if ($permessi == "lettura") {
             } else {
                 ?>
-                <!-- Card 5 -->
+                <!-- Card 3 -->
                 <div>
-                    <a href="calendarioMensile.php.php">
+                    <a href="inserimentoModificaDati.php">
                         <div class="uk-card uk-card-hover uk-card-default uk-card-body">
-                            <h3 class="uk-card-title">Calendario Mensile</h3>
+                            <h3 class="uk-card-title">Inserimento/Modifica Dati</h3>
                         </div>
                     </a>
                 </div>
 
-                <!-- Card 6 -->
+
+
+                <!-- Card 4 -->
                 <div>
-                    <a href="calendarioRichieste.php">
+                    <a href="inserimentoRichieste.php">
                         <div class="uk-card uk-card-hover uk-card-default uk-card-body">
-                            <h3 class="uk-card-title">Calendario Richieste</h3>
+                            <h3 class="uk-card-title">Inserimento Richieste</h3>
                         </div>
                     </a>
                 </div>
