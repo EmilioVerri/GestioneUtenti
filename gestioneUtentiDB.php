@@ -86,6 +86,23 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
 
 <div class="uk-container">
 
+    <!-- Header con navbar -->
+    <nav class="uk-navbar-container uk-margin" uk-navbar>
+        <div class="uk-navbar-left">
+        <ul class="uk-navbar-nav">
+                <li><a href="gestioneUtenti.php" style="color:black">Home Page</a></li>
+                <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
+                <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
+                <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
+                <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+            </ul>
+        </div>
+        <div class="uk-navbar-right">
+            <a href=".\gestioneUtenti.php"><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
+        </div>
+    </nav>
+
     <!-- Sezione per l'inserimento di un nuovo utente -->
     <h2>Inserisci un nuovo utente</h2>
     <?php if ($insert_msg): ?>
@@ -93,7 +110,7 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
             <p><?= htmlspecialchars($insert_msg); ?></p>
         </div>
     <?php endif; ?>
-    <form  method="POST">
+    <form method="POST">
         <div class="uk-margin">
             <label class="uk-form-label">Nome</label>
             <input class="uk-input" type="text" name="nome" required>
@@ -122,7 +139,7 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
             <p><?= htmlspecialchars($update_msg); ?></p>
         </div>
     <?php endif; ?>
-    <form action="gestioneUtentiDB.php" method="POST">
+    <form method="POST">
         <div class="uk-margin">
             <label class="uk-form-label">Seleziona Utente</label>
             <select class="uk-select" name="user_id" required>
@@ -159,7 +176,7 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
             <p><?= htmlspecialchars($delete_msg); ?></p>
         </div>
     <?php endif; ?>
-    <form action="gestioneUtenti.php" method="POST">
+    <form method="POST">
         <div class="uk-margin">
             <label class="uk-form-label">Seleziona Utente da Cancellare</label>
             <select class="uk-select" name="user_id" required>
