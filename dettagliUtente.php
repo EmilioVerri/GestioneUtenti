@@ -40,6 +40,7 @@ $delete_msg = '';
 
 // Gestione delle richieste (inserimento, modifica, cancellazione)
 if (isset($_POST['azione'])) {
+    $id_utente = $_POST['id_utente'];
     $tipologia = $_POST['tipologia'];
     $includi_sabato = isset($_POST['includi_sabato']);
     $includi_domenica = isset($_POST['includi_domenica']);
@@ -56,13 +57,34 @@ if (isset($_POST['azione'])) {
         }
         $insert_msg = "Richiesta inserita con successo!";
     } elseif ($_POST['azione'] == 'segna_usufruito') {
-        $data = $_POST['data'];
-        aggiorna_stato_richiesta($mysqli, $id_utente, $data, 'si');
-        $update_msg = "Richiesta segnata come usufruita!";
+    
+
+
+        if ($_POST['data_inizio'] && $_POST['data_fine']) {
+            $data_inizio = $_POST['data_inizio'];
+            $data_fine = $_POST['data_fine'];
+            aggiorna_stato_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine, 'si');
+            $update_msg = "Richiesta segnata come usufruita!";
+        } else{
+            $data = $_POST['data_singola'];
+            aggiorna_stato_richiesta($mysqli, $id_utente, $data, 'si');
+            $update_msg = "Richiesta segnata come usufruita!";
+        }
+
+       
     } elseif ($_POST['azione'] == 'cancella') {
-        $data = $_POST['data'];
-        cancella_richiesta($mysqli, $id_utente, $data);
-        $delete_msg = "Richiesta cancellata!";
+        if ($_POST['data_inizio'] && $_POST['data_fine']) {
+            $data_inizio = $_POST['data_inizio'];
+            $data_fine = $_POST['data_fine'];
+            cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine);
+            $delete_msg = "Richiesta cancellata!";
+        }
+        else{
+            $data = $_POST['data_singola'];
+            cancella_richiesta($mysqli, $id_utente, $data);
+            $delete_msg = "Richiesta cancellata!";
+        }
+      
     }
 }
 function inserisci_richiesta($mysqli, $id_utente, $data, $tipologia, $includi_sabato, $includi_domenica)
@@ -87,12 +109,12 @@ function inserisci_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $dat
 {
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
-    
+
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Data non valida
         return;
     }
-    
+
     $data_inizio = $data_inizio_obj->format('Y-m-d');
     $data_fine = $data_fine_obj->format('Y-m-d');
     $current_date = strtotime($data_inizio);
@@ -112,12 +134,52 @@ function aggiorna_stato_richiesta($mysqli, $id_utente, $data, $stato)
     $stmt->close();
 }
 
+function aggiorna_stato_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine, $stato)
+{
+    $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
+    $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
+
+    if (!$data_inizio_obj || !$data_fine_obj) {
+        // Date non valide
+        return;
+    }
+
+    $current_date = strtotime($data_inizio);
+    $end_date = strtotime($data_fine);
+
+    while ($current_date <= $end_date) {
+        $data = date('Y-m-d', $current_date);
+        aggiorna_stato_richiesta($mysqli, $id_utente, $data, $stato);
+        $current_date = strtotime('+1 day', $current_date);
+    }
+}
+
 function cancella_richiesta($mysqli, $id_utente, $data)
 {
     $stmt = $mysqli->prepare("DELETE FROM richieste WHERE id_utente = ? AND data = ?");
     $stmt->bind_param('is', $id_utente, $data);
     $stmt->execute();
     $stmt->close();
+}
+
+function cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine)
+{
+    $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
+    $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
+    
+    if (!$data_inizio_obj || !$data_fine_obj) {
+        // Date non valide
+        return;
+    }
+
+    $current_date = strtotime($data_inizio);
+    $end_date = strtotime($data_fine);
+
+    while ($current_date <= $end_date) {
+        $data = date('Y-m-d', $current_date);
+        cancella_richiesta($mysqli, $id_utente, $data);
+        $current_date = strtotime('+1 day', $current_date);
+    }
 }
 
 // Estrazione delle richieste dell'utente
@@ -131,6 +193,13 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
     <meta charset="UTF-8">
     <title>Dettagli Utente</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
+    <style>
+        .uk-list-divider {
+            max-height: 300px;
+            /* Adatta l'altezza massima in base alle tue esigenze */
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -164,7 +233,7 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
             </div>
         <?php endif; ?>
 
-        <h2>Gestione Richieste per <?= htmlspecialchars($utente['nome']); ?></h2>
+        <h2>Gestione Richieste per <strong><?= htmlspecialchars($utente['nome']); ?></strong></h2>
 
         <!-- Form per inserire nuove richieste -->
         <form method="POST">
@@ -182,8 +251,8 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
             <div class="uk-margin">
                 <div class="uk-form-controls">
                     <label>
-                        <input class="uk-radio" type="radio" name="tipo_richiesta" value="singolo"
-                            checked> Giorno singolo
+                        <input class="uk-radio" type="radio" name="tipo_richiesta" value="singolo" checked> Giorno
+                        singolo
                     </label><br>
                     <label>
                         <input class="uk-radio" type="radio" name="tipo_richiesta" value="periodo">
@@ -198,17 +267,17 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
                 <input class="uk-input" type="date" name="data_singola">
             </div>
 
-           <!-- Periodo -->
-<div class="uk-grid-small" id="campo-periodo" uk-grid style="display:none;">
-    <div class="uk-width-1-2">
-        <label class="uk-form-label">Data inizio</label>
-        <input class="uk-input" type="date" name="data_inizio" format="YYYY-MM-DD">
-    </div>
-    <div class="uk-width-1-2">
-        <label class="uk-form-label">Data fine</label>
-        <input class="uk-input" type="date" name="data_fine" format="YYYY-MM-DD">
-    </div>
-</div>
+            <!-- Periodo -->
+            <div class="uk-grid-small" id="campo-periodo" uk-grid style="display:none;">
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">Data inizio</label>
+                    <input class="uk-input" type="date" name="data_inizio">
+                </div>
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">Data fine</label>
+                    <input class="uk-input" type="date" name="data_fine">
+                </div>
+            </div>
 
 
             <div class="uk-margin">
@@ -235,9 +304,12 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
 
             <!-- Pulsanti azione -->
             <div class="uk-margin">
-                <button type="submit" name="azione" value="inserisci" class="uk-button uk-button-primary">Inserisci richiesta</button>
-                <button type="submit" name="azione" value="segna_usufruito" class="uk-button uk-button-secondary">Segna usufruito</button>
-                <button type="submit" name="azione" value="cancella" class="uk-button uk-button-danger">Cancella selezione</button>
+                <button type="submit" name="azione" value="inserisci" class="uk-button uk-button-primary">Inserisci
+                    richiesta</button>
+                <button type="submit" name="azione" value="segna_usufruito" class="uk-button uk-button-secondary">Segna
+                    usufruito</button>
+                <button type="submit" name="azione" value="cancella" class="uk-button uk-button-danger">Cancella
+                    selezione</button>
             </div>
         </form>
     </div>
@@ -245,7 +317,7 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit-icons.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tipoRichiestaRadios = document.querySelectorAll('input[name="tipo_richiesta"]');
             const campoDataSingola = document.getElementById('campo-data-singola');
             const campoPeriodo = document.getElementById('campo-periodo');
