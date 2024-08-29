@@ -57,7 +57,7 @@ if (isset($_POST['azione'])) {
         }
         $insert_msg = "Richiesta inserita con successo!";
     } elseif ($_POST['azione'] == 'segna_usufruito') {
-    
+
 
 
         if ($_POST['data_inizio'] && $_POST['data_fine']) {
@@ -65,26 +65,25 @@ if (isset($_POST['azione'])) {
             $data_fine = $_POST['data_fine'];
             aggiorna_stato_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine, 'si');
             $update_msg = "Richiesta segnata come usufruita!";
-        } else{
+        } else {
             $data = $_POST['data_singola'];
             aggiorna_stato_richiesta($mysqli, $id_utente, $data, 'si');
             $update_msg = "Richiesta segnata come usufruita!";
         }
 
-       
+
     } elseif ($_POST['azione'] == 'cancella') {
         if ($_POST['data_inizio'] && $_POST['data_fine']) {
             $data_inizio = $_POST['data_inizio'];
             $data_fine = $_POST['data_fine'];
             cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine);
             $delete_msg = "Richiesta cancellata!";
-        }
-        else{
+        } else {
             $data = $_POST['data_singola'];
             cancella_richiesta($mysqli, $id_utente, $data);
             $delete_msg = "Richiesta cancellata!";
         }
-      
+
     }
 }
 function inserisci_richiesta($mysqli, $id_utente, $data, $tipologia, $includi_sabato, $includi_domenica)
@@ -166,7 +165,7 @@ function cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data
 {
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
-    
+
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Date non valide
         return;

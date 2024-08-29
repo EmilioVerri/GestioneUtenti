@@ -89,172 +89,184 @@ $reparti_result = $mysqli->query("SELECT id, nome FROM reparti");
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <title>Gestione Utenti - Dipendenti</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
 </head>
 <style>
-  .uk-list {
-    max-height: 300px;
-    overflow-y: auto;
-  }
+    .uk-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
 </style>
+
 <body>
 
-<div class="uk-container">
+    <div class="uk-container">
 
-    <!-- Header con navbar -->
-    <nav class="uk-navbar-container uk-margin" uk-navbar>
-        <div class="uk-navbar-left">
-            <ul class="uk-navbar-nav">
-                <li><a href="gestioneUtenti.php" style="color:black">Home</a></li>
-                <?php if ($permessi == "admin"): ?>
-                    <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
-                    <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
-                <?php endif; ?>
-                
-                <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
-                <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
-                <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
-                <li><a href="logout.php" style="color:black">Logout</a></li>
-            </ul>
-        </div>
-        <div class="uk-navbar-right">
-            <a href=""><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
-        </div>
-    </nav>
+        <!-- Header con navbar -->
+        <nav class="uk-navbar-container uk-margin" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li><a href="gestioneUtenti.php" style="color:black">Home</a></li>
+                    <?php if ($permessi == "admin"): ?>
+                        <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
+                        <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
+                    <?php endif; ?>
 
-    <!-- Messaggi di feedback -->
-    <?php if ($update_msg): ?>
-        <div class="uk-alert-primary" uk-alert>
-            <p><?= htmlspecialchars($update_msg); ?></p>
-        </div>
-    <?php endif; ?>
-    <?php if ($create_msg): ?>
-        <div class="uk-alert-success" uk-alert>
-            <p><?= htmlspecialchars($create_msg); ?></p>
-        </div>
-    <?php endif; ?>
-    <?php if ($delete_msg): ?>
-        <div class="uk-alert-danger" uk-alert>
-            <p><?= htmlspecialchars($delete_msg); ?></p>
-        </div>
-    <?php endif; ?>
+                    <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+                    <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
+                    <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                    <li><a href="logout.php" style="color:black">Logout</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right">
+                <a href=""><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
+            </div>
+        </nav>
 
-    <div class="uk-grid-match uk-grid-small uk-child-width-1-2@m" uk-grid>
-        <!-- Colonna dei Reparti -->
-        <div>
-            <h3>Reparti</h3>
-            <ul class="uk-list uk-list-divider">
-                <?php while ($row = $reparti_result->fetch_assoc()): ?>
-                    <li><?= htmlspecialchars($row['nome']); ?></li>
-                <?php endwhile; ?>
-            </ul>
-        </div>
+        <!-- Messaggi di feedback -->
+        <?php if ($update_msg): ?>
+            <div class="uk-alert-primary" uk-alert>
+                <p><?= htmlspecialchars($update_msg); ?></p>
+            </div>
+        <?php endif; ?>
+        <?php if ($create_msg): ?>
+            <div class="uk-alert-success" uk-alert>
+                <p><?= htmlspecialchars($create_msg); ?></p>
+            </div>
+        <?php endif; ?>
+        <?php if ($delete_msg): ?>
+            <div class="uk-alert-danger" uk-alert>
+                <p><?= htmlspecialchars($delete_msg); ?></p>
+            </div>
+        <?php endif; ?>
 
-        <!-- Colonna degli Utenti -->
-        <div>
-            <h3>Dipendenti</h3>
-            <ul class="uk-list uk-list-divider">
-                <?php while ($row = $users_result->fetch_assoc()): ?>
-                    <li>
-                        <?= htmlspecialchars($row['nome']); ?>
-                        <a href="#modal-modifica-<?= htmlspecialchars($row['id']); ?>" uk-toggle>Modifica</a>
-                        <a href="#modal-elimina-<?= htmlspecialchars($row['id']); ?>" uk-toggle>Elimina</a>
-                        
-                        <!-- Modal Modifica Utente -->
-                        <div id="modal-modifica-<?= htmlspecialchars($row['id']); ?>" uk-modal>
-                            <div class="uk-modal-dialog uk-modal-body">
-                                <h2 class="uk-modal-title">Modifica Utente</h2>
-                                <form method="POST">
-                                    <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['id']); ?>">
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label">Nome</label>
-                                        <input class="uk-input" type="text" name="nome" value="<?= htmlspecialchars($row['nome']); ?>" required>
-                                    </div>
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label">Reparto</label>
-                                        <select class="uk-select" name="reparto" required>
-                                            <?php
-                                            // Re-query the departments for each modal
-                                            $reparti_result_modal = $mysqli->query("SELECT id, nome FROM reparti");
-                                            while ($reparto_row = $reparti_result_modal->fetch_assoc()): ?>
-                                                <option value="<?= htmlspecialchars($reparto_row['nome']); ?>" <?= ($row['reparto'] == $reparto_row['nome']) ? 'selected' : ''; ?>>
-                                                    <?= htmlspecialchars($reparto_row['nome']); ?>
-                                                </option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </div>
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label">Dipendente</label>
-                                        <input class="uk-checkbox" type="checkbox" name="dipendente" <?= ($row['dipendente'] == 'si') ? 'checked' : ''; ?>>
-                                    </div>
-                                    <button class="uk-button uk-button-primary" type="submit" name="modifica_utente">Salva Modifiche</button>
-                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Annulla</button>
-                                </form>
+        <div class="uk-grid-match uk-grid-small uk-child-width-1-2@m" uk-grid>
+            <!-- Colonna dei Reparti -->
+            <div>
+                <h3>Reparti</h3>
+                <ul class="uk-list uk-list-divider">
+                    <?php while ($row = $reparti_result->fetch_assoc()): ?>
+                        <li><?= htmlspecialchars($row['nome']); ?></li>
+                    <?php endwhile; ?>
+                </ul>
+            </div>
+
+            <!-- Colonna degli Utenti -->
+            <div>
+                <h3>Dipendenti</h3>
+                <ul class="uk-list uk-list-divider">
+                    <?php while ($row = $users_result->fetch_assoc()): ?>
+                        <li>
+                            <?= htmlspecialchars($row['nome']); ?>
+                            <a href="#modal-modifica-<?= htmlspecialchars($row['id']); ?>" uk-toggle>Modifica</a>
+                            <a href="#modal-elimina-<?= htmlspecialchars($row['id']); ?>" uk-toggle>Elimina</a>
+
+                            <!-- Modal Modifica Utente -->
+                            <div id="modal-modifica-<?= htmlspecialchars($row['id']); ?>" uk-modal>
+                                <div class="uk-modal-dialog uk-modal-body">
+                                    <h2 class="uk-modal-title">Modifica Utente</h2>
+                                    <form method="POST">
+                                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['id']); ?>">
+                                        <div class="uk-margin">
+                                            <label class="uk-form-label">Nome</label>
+                                            <input class="uk-input" type="text" name="nome"
+                                                value="<?= htmlspecialchars($row['nome']); ?>" required>
+                                        </div>
+                                        <div class="uk-margin">
+                                            <label class="uk-form-label">Reparto</label>
+                                            <select class="uk-select" name="reparto" required>
+                                                <?php
+                                                // Re-query the departments for each modal
+                                                $reparti_result_modal = $mysqli->query("SELECT id, nome FROM reparti");
+                                                while ($reparto_row = $reparti_result_modal->fetch_assoc()): ?>
+                                                    <option value="<?= htmlspecialchars($reparto_row['nome']); ?>"
+                                                        <?= ($row['reparto'] == $reparto_row['nome']) ? 'selected' : ''; ?>>
+                                                        <?= htmlspecialchars($reparto_row['nome']); ?>
+                                                    </option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </div>
+                                        <div class="uk-margin">
+                                            <label class="uk-form-label">Dipendente</label>
+                                            <input class="uk-checkbox" type="checkbox" name="dipendente"
+                                                <?= ($row['dipendente'] == 'si') ? 'checked' : ''; ?>>
+                                        </div>
+                                        <button class="uk-button uk-button-primary" type="submit"
+                                            name="modifica_utente">Salva Modifiche</button>
+                                        <button class="uk-button uk-button-default uk-modal-close"
+                                            type="button">Annulla</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Modal Elimina Utente -->
-                        <div id="modal-elimina-<?= htmlspecialchars($row['id']); ?>" uk-modal>
-                            <div class="uk-modal-dialog uk-modal-body">
-                                <h2 class="uk-modal-title">Conferma Eliminazione</h2>
-                                <p>Sei sicuro di voler eliminare <?= htmlspecialchars($row['nome']); ?>?</p>
-                                <form method="POST">
-                                    <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['id']); ?>">
-                                    <button class="uk-button uk-button-danger" type="submit" name="elimina_utente">Elimina</button>
-                                    <button class="uk-button uk-button-default uk-modal-close" type="button">Annulla</button>
-                                </form>
+                            <!-- Modal Elimina Utente -->
+                            <div id="modal-elimina-<?= htmlspecialchars($row['id']); ?>" uk-modal>
+                                <div class="uk-modal-dialog uk-modal-body">
+                                    <h2 class="uk-modal-title">Conferma Eliminazione</h2>
+                                    <p>Sei sicuro di voler eliminare <?= htmlspecialchars($row['nome']); ?>?</p>
+                                    <form method="POST">
+                                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['id']); ?>">
+                                        <button class="uk-button uk-button-danger" type="submit"
+                                            name="elimina_utente">Elimina</button>
+                                        <button class="uk-button uk-button-default uk-modal-close"
+                                            type="button">Annulla</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <!-- Pulsante per Creare un Nuovo Utente -->
-    <div class="uk-margin">
-        <button class="uk-button uk-button-primary" uk-toggle="target: #modal-crea-utente">Crea Nuovo Utente</button>
-    </div>
-
-    <!-- Modal Crea Utente -->
-    <div id="modal-crea-utente" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
-            <h2 class="uk-modal-title">Crea Nuovo Utente</h2>
-            <form method="POST">
-                <div class="uk-margin">
-                    <label class="uk-form-label">Nome</label>
-                    <input class="uk-input" type="text" name="nome" required>
-                </div>
-                <div class="uk-margin">
-                    <label class="uk-form-label">Reparto</label>
-                    <select class="uk-select" name="reparto" required>
-                        <?php
-                        // Re-query for the departments list
-                        $reparti_result = $mysqli->query("SELECT id, nome FROM reparti");
-                        while ($row = $reparti_result->fetch_assoc()): ?>
-                            <option value="<?= htmlspecialchars($row['nome']); ?>"><?= htmlspecialchars($row['nome']); ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-                <div class="uk-margin">
-                    <label class="uk-form-label">Dipendente</label>
-                    <input class="uk-checkbox" type="checkbox" name="dipendente">
-                </div>
-                <button class="uk-button uk-button-primary" type="submit" name="crea_utente">Crea Utente</button>
-                <button class="uk-button uk-button-default uk-modal-close" type="button">Annulla</button>
-            </form>
+        <!-- Pulsante per Creare un Nuovo Utente -->
+        <div class="uk-margin">
+            <button class="uk-button uk-button-primary" uk-toggle="target: #modal-crea-utente">Crea Nuovo
+                Utente</button>
         </div>
+
+        <!-- Modal Crea Utente -->
+        <div id="modal-crea-utente" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body">
+                <h2 class="uk-modal-title">Crea Nuovo Utente</h2>
+                <form method="POST">
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Nome</label>
+                        <input class="uk-input" type="text" name="nome" required>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Reparto</label>
+                        <select class="uk-select" name="reparto" required>
+                            <?php
+                            // Re-query for the departments list
+                            $reparti_result = $mysqli->query("SELECT id, nome FROM reparti");
+                            while ($row = $reparti_result->fetch_assoc()): ?>
+                                <option value="<?= htmlspecialchars($row['nome']); ?>">
+                                    <?= htmlspecialchars($row['nome']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Dipendente</label>
+                        <input class="uk-checkbox" type="checkbox" name="dipendente">
+                    </div>
+                    <button class="uk-button uk-button-primary" type="submit" name="crea_utente">Crea Utente</button>
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">Annulla</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
-</div>
-
-<!-- Inclusione di UIKit JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit-icons.min.js"></script>
+    <!-- Inclusione di UIKit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit-icons.min.js"></script>
 </body>
+
 </html>
 
 <?php

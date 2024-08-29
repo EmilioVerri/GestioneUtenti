@@ -4,7 +4,7 @@ session_start();
 if (!isset($_SESSION['id'])) {
     header('Location: index.php');
     exit;
-}else {
+} else {
     $mysqli = new mysqli("localhost", "root", "", "gestioneutenti");
     if ($mysqli->connect_error) {
         die("Connessione fallita: " . $mysqli->connect_error);
@@ -19,10 +19,10 @@ if (!isset($_SESSION['id'])) {
     $stmt->fetch();
 
 
-    if($permessi!="admin"){
+    if ($permessi != "admin") {
         header('Location: index.php');
         exit;
-    }else{
+    } else {
 
     }
 }
@@ -30,7 +30,8 @@ if (!isset($_SESSION['id'])) {
 
 
 // Funzione per hashare la password
-function hashPassword($password) {
+function hashPassword($password)
+{
     return password_hash($password, PASSWORD_DEFAULT);
 }
 
@@ -99,126 +100,129 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <title>Gestione Utenti</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
 </head>
+
 <body>
 
-<div class="uk-container">
+    <div class="uk-container">
 
-    <!-- Header con navbar -->
-    <nav class="uk-navbar-container uk-margin" uk-navbar>
-        <div class="uk-navbar-left">
-        <ul class="uk-navbar-nav">
-                <li><a href="gestioneUtenti.php" style="color:black">Home Page</a></li>
-                <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
-                <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
-                <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
-                <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
-                <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
-                <li><a href="logout.php" style="color:black">Logout.php</a></li>
-            </ul>
-        </div>
-        <div class="uk-navbar-right">
-            <a href=".\gestioneUtenti.php"><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
-        </div>
-    </nav>
+        <!-- Header con navbar -->
+        <nav class="uk-navbar-container uk-margin" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li><a href="gestioneUtenti.php" style="color:black">Home Page</a></li>
+                    <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
+                    <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
+                    <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                    <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
+                    <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+                    <li><a href="logout.php" style="color:black">Logout.php</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right">
+                <a href=".\gestioneUtenti.php"><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
+            </div>
+        </nav>
 
-    <!-- Sezione per l'inserimento di un nuovo utente -->
-    <h2>Inserisci un nuovo utente</h2>
-    <?php if ($insert_msg): ?>
-        <div class="uk-alert-success" uk-alert>
-            <p><?= htmlspecialchars($insert_msg); ?></p>
-        </div>
-    <?php endif; ?>
-    <form method="POST">
-        <div class="uk-margin">
-            <label class="uk-form-label">Nome</label>
-            <input class="uk-input" type="text" name="nome" required>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label">Password</label>
-            <input class="uk-input" type="password" name="password" required>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label">Permessi</label>
-            <select class="uk-select" name="permessi" required>
-                <option value="admin">Admin</option>
-                <option value="scrittura">Scrittura</option>
-                <option value="lettura">Lettura</option>
-            </select>
-        </div>
-        <button class="uk-button uk-button-primary" type="submit" name="inserisci_utente">Inserisci Utente</button>
-    </form>
+        <!-- Sezione per l'inserimento di un nuovo utente -->
+        <h2>Inserisci un nuovo utente</h2>
+        <?php if ($insert_msg): ?>
+            <div class="uk-alert-success" uk-alert>
+                <p><?= htmlspecialchars($insert_msg); ?></p>
+            </div>
+        <?php endif; ?>
+        <form method="POST">
+            <div class="uk-margin">
+                <label class="uk-form-label">Nome</label>
+                <input class="uk-input" type="text" name="nome" required>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label">Password</label>
+                <input class="uk-input" type="password" name="password" required>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label">Permessi</label>
+                <select class="uk-select" name="permessi" required>
+                    <option value="admin">Admin</option>
+                    <option value="scrittura">Scrittura</option>
+                    <option value="lettura">Lettura</option>
+                </select>
+            </div>
+            <button class="uk-button uk-button-primary" type="submit" name="inserisci_utente">Inserisci Utente</button>
+        </form>
 
-    <hr>
+        <hr>
 
-    <!-- Sezione per la modifica di un utente esistente -->
-    <h2>Modifica un utente</h2>
-    <?php if ($update_msg): ?>
-        <div class="uk-alert-primary" uk-alert>
-            <p><?= htmlspecialchars($update_msg); ?></p>
-        </div>
-    <?php endif; ?>
-    <form method="POST">
-        <div class="uk-margin">
-            <label class="uk-form-label">Seleziona Utente</label>
-            <select class="uk-select" name="user_id" required>
-                <?php while ($row = $users_result->fetch_assoc()): ?>
-                    <option value="<?= htmlspecialchars($row['id']); ?>"><?= htmlspecialchars($row['nome']); ?></option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label">Nuovo Nome</label>
-            <input class="uk-input" type="text" name="nome" required>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label">Nuova Password</label>
-            <input class="uk-input" type="password" name="password" required>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label">Nuovi Permessi</label>
-            <select class="uk-select" name="permessi" required>
-                <option value="admin">Admin</option>
-                <option value="scrittura">Scrittura</option>
-                <option value="lettura">Lettura</option>
-            </select>
-        </div>
-        <button class="uk-button uk-button-primary" type="submit" name="modifica_utente">Modifica Utente</button>
-    </form>
+        <!-- Sezione per la modifica di un utente esistente -->
+        <h2>Modifica un utente</h2>
+        <?php if ($update_msg): ?>
+            <div class="uk-alert-primary" uk-alert>
+                <p><?= htmlspecialchars($update_msg); ?></p>
+            </div>
+        <?php endif; ?>
+        <form method="POST">
+            <div class="uk-margin">
+                <label class="uk-form-label">Seleziona Utente</label>
+                <select class="uk-select" name="user_id" required>
+                    <?php while ($row = $users_result->fetch_assoc()): ?>
+                        <option value="<?= htmlspecialchars($row['id']); ?>"><?= htmlspecialchars($row['nome']); ?></option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label">Nuovo Nome</label>
+                <input class="uk-input" type="text" name="nome" required>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label">Nuova Password</label>
+                <input class="uk-input" type="password" name="password" required>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label">Nuovi Permessi</label>
+                <select class="uk-select" name="permessi" required>
+                    <option value="admin">Admin</option>
+                    <option value="scrittura">Scrittura</option>
+                    <option value="lettura">Lettura</option>
+                </select>
+            </div>
+            <button class="uk-button uk-button-primary" type="submit" name="modifica_utente">Modifica Utente</button>
+        </form>
 
-    <hr>
+        <hr>
 
-    <!-- Sezione per la cancellazione di un utente -->
-    <h2>Cancella un utente</h2>
-    <?php if ($delete_msg): ?>
-        <div class="uk-alert-danger" uk-alert>
-            <p><?= htmlspecialchars($delete_msg); ?></p>
-        </div>
-    <?php endif; ?>
-    <form method="POST">
-        <div class="uk-margin">
-            <label class="uk-form-label">Seleziona Utente da Cancellare</label>
-            <select class="uk-select" name="user_id" required>
-                <?php
-                $users_result = $mysqli->query("SELECT id, nome FROM loginutente"); // Re-query for the delete section
-                while ($row = $users_result->fetch_assoc()): ?>
-                    <option value="<?= htmlspecialchars($row['id']); ?>"><?= htmlspecialchars($row['nome']); ?></option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <button class="uk-button uk-button-danger" type="submit" name="cancella_utente">Cancella Utente</button>
-    </form>
+        <!-- Sezione per la cancellazione di un utente -->
+        <h2>Cancella un utente</h2>
+        <?php if ($delete_msg): ?>
+            <div class="uk-alert-danger" uk-alert>
+                <p><?= htmlspecialchars($delete_msg); ?></p>
+            </div>
+        <?php endif; ?>
+        <form method="POST">
+            <div class="uk-margin">
+                <label class="uk-form-label">Seleziona Utente da Cancellare</label>
+                <select class="uk-select" name="user_id" required>
+                    <?php
+                    $users_result = $mysqli->query("SELECT id, nome FROM loginutente"); // Re-query for the delete section
+                    while ($row = $users_result->fetch_assoc()): ?>
+                        <option value="<?= htmlspecialchars($row['id']); ?>"><?= htmlspecialchars($row['nome']); ?></option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <button class="uk-button uk-button-danger" type="submit" name="cancella_utente">Cancella Utente</button>
+        </form>
 
-</div>
+    </div>
 
-<!-- Inclusione di UIKit JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit-icons.min.js"></script>
+    <!-- Inclusione di UIKit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/js/uikit-icons.min.js"></script>
 </body>
+
 </html>
 
 <?php
