@@ -86,9 +86,48 @@ if (isset($_POST['azione'])) {
 
     }
 }
+
+function convertiGiornoItaliano($giornoInglese) {
+
+
+
+   
+    // Array associativo per la conversione
+    $giorniSettimana = [
+        'Monday' => 'Lunedì',
+        'Tuesday' => 'Martedì',
+        'Wednesday' => 'Mercoledì',
+        'Thursday' => 'Giovedì',
+        'Friday' => 'Venerdì',
+        'Saturday' => 'Sabato',
+        'Sunday' => 'Domenica'
+    ];
+
+
+    // Verifica se il giorno è presente nell'array
+    if (array_key_exists($giornoInglese, $giorniSettimana)) {
+        return $giorniSettimana[$giornoInglese];
+    } else {
+        return "Giorno non valido";
+    }
+}
+
+
+
+
 function inserisci_richiesta($mysqli, $id_utente, $data, $tipologia, $includi_sabato, $includi_domenica)
 {
     $data_formattata = DateTime::createFromFormat('Y-m-d', $data);
+
+
+setlocale(LC_TIME, 'it_IT');
+
+// Formatta la data utilizzando il formato completo del giorno della settimana
+$giorno_settimana = $data_formattata->format('l');
+
+
+$giornoItaliano=convertiGiornoItaliano($giorno_settimana);
+
     if (!$data_formattata) {
         // Data non valida
         return;
@@ -97,8 +136,8 @@ function inserisci_richiesta($mysqli, $id_utente, $data, $tipologia, $includi_sa
     if ((!$includi_sabato && $giorno_settimana == 'Saturday') || (!$includi_domenica && $giorno_settimana == 'Sunday')) {
         return;
     }
-    $stmt = $mysqli->prepare("INSERT INTO richieste (id_utente, data, tipologia, usufruito) VALUES (?, ?, ?, 'no')");
-    $stmt->bind_param('iss', $id_utente, $data, $tipologia);
+    $stmt = $mysqli->prepare("INSERT INTO richieste (id_utente, data,giorno, tipologia, usufruito) VALUES (?, ?, ?, ?, 'no')");
+    $stmt->bind_param('isss', $id_utente, $data,$giornoItaliano, $tipologia);
     $stmt->execute();
     $stmt->close();
 }
@@ -108,6 +147,18 @@ function inserisci_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $dat
 {
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
+
+
+
+    
+
+
+
+
+
+
+
+    
 
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Data non valida
@@ -180,6 +231,22 @@ function cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data
         $current_date = strtotime('+1 day', $current_date);
     }
 }
+
+
+
+function convertiData($data) {
+    // Rimuoviamo gli eventuali caratteri speciali che potrebbero essere stati aggiunti da htmlspecialchars()
+    $dataPura = htmlspecialchars_decode($data);
+  
+    // Esplodiamo la stringa in un array, separando gli elementi tramite il trattino
+    $partiData = explode('-', $dataPura);
+  
+    // Ricomponiamo la stringa nel formato desiderato
+    $dataFormattata = $partiData[2] . '-' . $partiData[1] . '-' . $partiData[0];
+  
+    return $dataFormattata;
+  }
+  
 
 // Estrazione delle richieste dell'utente
 $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $id_utente");
@@ -291,7 +358,8 @@ $richieste_result = $mysqli->query("SELECT * FROM richieste WHERE id_utente = $i
             <ul class="uk-list uk-list-divider">
                 <?php while ($richiesta = $richieste_result->fetch_assoc()): ?>
                     <li data-tipologia="<?= htmlspecialchars($richiesta['tipologia']); ?>">
-                        <p><?= htmlspecialchars($richiesta['data']); ?> -
+                        <p><?= htmlspecialchars(convertiData($richiesta['data'])); ?> -
+                        <?= htmlspecialchars($richiesta['giorno']); ?> -
                             <?= htmlspecialchars($richiesta['tipologia']); ?> - Usufruito:
                             <?= htmlspecialchars($richiesta['usufruito']); ?>
                         </p>
