@@ -35,69 +35,32 @@ $stmt->fetch();
     <title>Sezione con Card</title>
     <!-- Inclusione di UIKit -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
-    <style>
-        /* Centrare le card verticalmente e orizzontalmente */
-        .uk-grid-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
-            /* Imposta l'altezza minima per centrare verticalmente */
-        }
-
-        /* Personalizzazione della navbar */
-        .uk-navbar-container {
-            background-color: #1e87f0;
-        }
-
-        .uk-navbar-nav>li>a {
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .uk-navbar-nav>li>a:hover {
-            color: #ffdd57;
-        }
-    </style>
+   
 </head>
 
 <body>
 
-    <div class="uk-container">
-
-        <!-- Navbar con puntamenti e immagine in alto a destra -->
+<div class="uk-container">
+        <!-- Navbar -->
         <nav class="uk-navbar-container uk-margin" uk-navbar>
             <div class="uk-navbar-left">
                 <ul class="uk-navbar-nav">
-                    <?php
-                    if ($permessi == "scrittura" || $permessi == "lettura") {
-                    } else {
-                        ?>
+                    <li><a href="gestioneUtenti.php" style="color:black">Home</a></li>
+                    <?php if ($permessi == "admin"): ?>
                         <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
                         <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
+                    <?php endif; ?>
 
-                        <?php
-                    }
-
-                    if ($permessi == "lettura") {
-                    } else {
-
-                        ?>
+                    <?php if ($permessi == "admin" || $permessi=="scrittura"): ?>
                         <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
-                        <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
-
-
-                        <?php
-                    }
-
-                    ?>
+                    <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
+                    <?php endif; ?>
                     <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
                     <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
-                    <li><a href="logout.php" style="color:black">Logout.php</a></li>
+                    <li><a href="logout.php" style="color:black">Logout</a></li>
                 </ul>
             </div>
             <div class="uk-navbar-right">
-                <!-- Immagine in alto a destra -->
                 <a href=""><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
             </div>
         </nav>

@@ -68,27 +68,29 @@ if (!isset($_SESSION['id'])) {
     </script>
 
 
-    <!-- Navbar -->
-    <nav class="uk-navbar-container uk-margin" uk-navbar>
-        <div class="uk-navbar-left">
-            <ul class="uk-navbar-nav">
-                <li><a href="gestioneUtenti.php" style="color:black">Home</a></li>
-                <?php if ($permessi == "admin"): ?>
-                    <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
-                    <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
-                <?php endif; ?>
-                <?php if ($permessi == "admin" || $permessi == "scrittura"): ?>
+<div class="uk-container">
+        <!-- Navbar -->
+        <nav class="uk-navbar-container uk-margin" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li><a href="gestioneUtenti.php" style="color:black">Home</a></li>
+                    <?php if ($permessi == "admin"): ?>
+                        <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
+                        <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
+                    <?php endif; ?>
+                    <?php if ($permessi == "admin" || $permessi=="scrittura"): ?>
+                        <li><a href="inserimentoModificaDati.php" style="color:black">Inserimento/Modifica Dati</a></li>
                     <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
-                <?php endif; ?>
-                <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
-                <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
-                <li><a href="logout.php" style="color:black">Logout</a></li>
-            </ul>
-        </div>
-        <div class="uk-navbar-right">
-            <a href=""><img src="./images/logo.png" alt="Logo" width="100" height="100"></a>
-        </div>
-    </nav>
+                    <?php endif; ?>
+                    <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
+                    <li><a href="logout.php" style="color:black">Logout</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right">
+                <a href=""><img src=".\images\logo.png" alt="Logo" width="100" height="100"></a>
+            </div>
+        </nav>
+        
 
     <!-- Sezione Calendario -->
 
@@ -243,6 +245,7 @@ if (!isset($_SESSION['id'])) {
                 ?>
             </tbody>
         </table>
+    </div>
     </div>
 
 

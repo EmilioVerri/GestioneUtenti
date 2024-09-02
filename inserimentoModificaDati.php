@@ -115,7 +115,6 @@ $reparti_result = $mysqli->query("SELECT id, nome FROM reparti");
                         <li><a href="GestioneUtentiDB.php" style="color:black">Gestione Utenti_DB</a></li>
                         <li><a href="logAzioniUtenti.php" style="color:black">Log Azioni Utenti_DB</a></li>
                     <?php endif; ?>
-
                     <li><a href="inserimentoRichieste.php" style="color:black">Inserimento Richieste</a></li>
                     <li><a href="calendarioMensile.php" style="color:black">Calendario Mensile</a></li>
                     <li><a href="calendarioRichieste.php" style="color:black">Calendario Richieste</a></li>
