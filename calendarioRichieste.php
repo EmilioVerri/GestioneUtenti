@@ -118,6 +118,10 @@ foreach ($richieste as $richiesta) {
                 $dataOriginale=$_GET['currentDate'];
                 $dataConvertita = date('d-m-Y', strtotime($dataOriginale));
                 echo $dataConvertita;
+            }else{
+                $oggi = date("d/m/Y");
+            echo $oggi; // Output: 20/11/2023
+
             }
 
             ?>" aria-label="Input" disabled style="width:15%">
@@ -132,6 +136,14 @@ foreach ($richieste as $richiesta) {
                 // Formattiamo la data aggiornata nel formato gg-mm-yyyy
                 $dataFormattata = date('d-m-Y', $dataAggiornata);
                 echo $dataFormattata;
+            }else{
+                $oggi = date("Y-m-d");
+                $dataAggiornata = strtotime($oggi . ' +6 days');
+                
+                // Formattiamo la data aggiornata nel formato gg-mm-yyyy
+                $dataFormattata = date('d-m-Y', $dataAggiornata);
+                echo $dataFormattata;
+
             }?>" aria-label="Input" disabled style="width:15%">
         </div>
         <!-- Form per il filtro -->
@@ -209,39 +221,51 @@ foreach ($period as $date) {
   
     <script>
 document.getElementById('export-to-excel').addEventListener('click', function() {
-  // Seleziona tutti gli header dei giorni
-  const dayHeaders = document.querySelectorAll('h4.day-header');
+    // Seleziona tutti gli header dei giorni
+    const dayHeaders = document.querySelectorAll('h4.day-header');
 
-  // Funzione per creare una nuova riga con il giorno come prima colonna
-  function createRowWithDay(row, dayIndex) {
-    const newRow = row.cloneNode(true);
-    const firstCell = newRow.insertCell(0);
-    firstCell.textContent = dayHeaders[dayIndex].textContent;
-    return newRow;
-  }
+    // Funzione per creare una nuova riga con il giorno come prima colonna
+    function createRowWithDay(day, cells) {
+        let newRow = '<tr>';
+        newRow += `<td>${day}</td>`;
+        cells.forEach(cell => {
+            newRow += `<td>${cell.innerHTML}</td>`;
+        });
+        newRow += '</tr>';
+        return newRow;
+    }
 
-  // Ottieni il contenuto della tabella
-  const table = document.querySelector('.uk-table');
-  let tableHTML = '<table><thead><tr><th>Giorno</th><th>Nome Dipendente</th><th>Tipologia</th><th>Usufruito</th><th>Reparto</th></tr></thead><tbody>';
+    // Ottieni il contenuto della tabella
+    let tableHTML = '<table><thead><tr><th>Giorno</th><th>Nome Dipendente</th><th>Tipologia</th><th>Usufruito</th><th>Reparto</th></tr></thead><tbody>';
 
-  // Processa ogni riga della tabella (escludendo l'intestazione)
-  table.querySelectorAll('tbody tr').forEach((row, index) => {
-    const newRow = createRowWithDay(row, index); // Associa il giorno alla riga
-    tableHTML += newRow.outerHTML;
-  });
+    // Itera su ogni giorno della settimana
+    dayHeaders.forEach(dayHeader => {
+        const day = dayHeader.textContent;
+        const rowsForDay = dayHeader.nextElementSibling.querySelectorAll('tbody tr');
+        
+        if (rowsForDay.length > 0) {
+            rowsForDay.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                tableHTML += createRowWithDay(day, cells);
+            });
+        } else {
+            // Se non ci sono richieste per il giorno, crea una riga vuota per quel giorno
+            tableHTML += `<tr><td>${day}</td><td colspan="4">Nessuna richiesta</td></tr>`;
+        }
+    });
 
-  tableHTML += '</tbody></table>';
+    tableHTML += '</tbody></table>';
 
-  // Crea un elemento anchor nascosto per il download
-  const hiddenElement = document.createElement('a');
-  hiddenElement.href = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8,${encodeURIComponent(tableHTML)}`;
-  hiddenElement.download = 'confronto_richieste_settimanali.xls';
-  hiddenElement.style.display = 'none';
-  document.body.appendChild(hiddenElement);
+    // Crea un elemento anchor nascosto per il download
+    const hiddenElement = document.createElement('a');
+    hiddenElement.href = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8,${encodeURIComponent(tableHTML)}`;
+    hiddenElement.download = 'confronto_richieste_settimanali.xls';
+    hiddenElement.style.display = 'none';
+    document.body.appendChild(hiddenElement);
 
-  // Simula un click per avviare il download
-  hiddenElement.click();
-  document.body.removeChild(hiddenElement);
+    // Simula un click per avviare il download
+    hiddenElement.click();
+    document.body.removeChild(hiddenElement);
 });
 </script>
 </body>
