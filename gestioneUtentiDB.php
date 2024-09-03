@@ -103,7 +103,7 @@ $users_result = $mysqli->query("SELECT id, nome FROM loginutente");
 
 <head>
     <meta charset="UTF-8">
-    <title>Gestione Utenti</title>
+    <title>Gestione Utenti DB</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
 </head>
 

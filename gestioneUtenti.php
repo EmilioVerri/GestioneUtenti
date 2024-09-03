@@ -32,7 +32,7 @@ $stmt->fetch();
 
 <head>
     <meta charset="UTF-8">
-    <title>Sezione con Card</title>
+    <title>HomePage</title>
     <!-- Inclusione di UIKit -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.9.0/css/uikit.min.css">
    
