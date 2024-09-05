@@ -46,6 +46,20 @@ if (isset($_POST['modifica_utente'])) {
     }
 
     $stmt->close();
+
+
+
+    //logAzioni utente modifica utente
+    $idScrittura=$_SESSION['id'];
+    $data_attuale = date('d/m/Y');
+    $azione="Modifica utente";
+    $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nome);
+    $stmt->execute();
+    $stmt->close();
+
+
+    
 }
 
 // Creazione nuovo utente
@@ -64,11 +78,48 @@ if (isset($_POST['crea_utente'])) {
     }
 
     $stmt->close();
+
+
+
+    //logAzioni utente CREA UTENTE
+    $idScrittura=$_SESSION['id'];
+    $data_attuale = date('d/m/Y');
+    $azione="Creazione utente";
+    $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nome);
+    $stmt->execute();
+    $stmt->close();
+
+
+
+
+
+
 }
 
 // Eliminazione utente
 if (isset($_POST['elimina_utente'])) {
     $user_id = $_POST['user_id'];
+
+        //logAzioni utente eliminazione utente
+        $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$user_id}");
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($nomeUtenteLOg);
+        $stmt->fetch();
+        $stmt->close();
+        $idScrittura=$_SESSION['id'];
+        $data_attuale = date('d/m/Y');
+        $azione="Eliminazione utente";
+        $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOg);
+        $stmt->execute();
+        $stmt->close();
+
+
+
+
+
 
     $stmt = $mysqli->prepare("DELETE FROM utenti WHERE id = ?");
     $stmt->bind_param('i', $user_id);
@@ -80,6 +131,23 @@ if (isset($_POST['elimina_utente'])) {
     }
 
     $stmt->close();
+
+
+
+
+    $stmt = $mysqli->prepare("DELETE FROM richieste WHERE id_utente = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+
+    $stmt->close();
+
+
+
+
+                             
+
+
+
 }
 
 // Estrazione degli utenti e reparti

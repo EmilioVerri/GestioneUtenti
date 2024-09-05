@@ -88,10 +88,6 @@ if (isset($_POST['azione'])) {
 }
 
 function convertiGiornoItaliano($giornoInglese) {
-
-
-
-   
     // Array associativo per la conversione
     $giorniSettimana = [
         'Monday' => 'Lunedì',
@@ -140,6 +136,28 @@ $giornoItaliano=convertiGiornoItaliano($giorno_settimana);
     $stmt->bind_param('isss', $id_utente, $data,$giornoItaliano, $tipologia);
     $stmt->execute();
     $stmt->close();
+
+
+
+
+
+
+
+        //logAzioni utente inserimento richiesta
+        $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($nomeUtenteLOG);
+        $stmt->fetch();
+        $stmt->close();
+        $idScrittura=$_SESSION['id'];
+        $data_attuale = date('d/m/Y');
+        $azione="Inserimento richiesta utente";
+        $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+        $stmt->execute();
+        $stmt->close();
+    
 }
 
 
@@ -150,15 +168,20 @@ function inserisci_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $dat
 
 
 
-    
-
-
-
-
-
-
-
-    
+           //logAzioni utente inserimento richiesta
+           $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+           $stmt->execute();
+           $stmt->store_result();
+           $stmt->bind_result($nomeUtenteLOG);
+           $stmt->fetch();
+           $stmt->close();
+           $idScrittura=$_SESSION['id'];
+           $data_attuale = date('d/m/Y');
+           $azione="Inserimento richiesta utente";
+           $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+           $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+           $stmt->execute();
+           $stmt->close();
 
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Data non valida
@@ -182,12 +205,46 @@ function aggiorna_stato_richiesta($mysqli, $id_utente, $data, $stato)
     $stmt->bind_param('sis', $stato, $id_utente, $data);
     $stmt->execute();
     $stmt->close();
+
+
+
+
+           //logAzioni utente inserimento usufruito
+           $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+           $stmt->execute();
+           $stmt->store_result();
+           $stmt->bind_result($nomeUtenteLOG);
+           $stmt->fetch();
+           $stmt->close();
+           $idScrittura=$_SESSION['id'];
+           $data_attuale = date('d/m/Y');
+           $azione="Cambio stato usufruito";
+           $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+           $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+           $stmt->execute();
+           $stmt->close();
 }
 
 function aggiorna_stato_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine, $stato)
 {
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
+
+
+               //logAzioni utente inserimento usufruito
+               $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+               $stmt->execute();
+               $stmt->store_result();
+               $stmt->bind_result($nomeUtenteLOG);
+               $stmt->fetch();
+               $stmt->close();
+               $idScrittura=$_SESSION['id'];
+               $data_attuale = date('d/m/Y');
+               $azione="Cambio stato usufruito";
+               $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+               $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+               $stmt->execute();
+               $stmt->close();
 
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Date non valide
@@ -210,12 +267,45 @@ function cancella_richiesta($mysqli, $id_utente, $data)
     $stmt->bind_param('is', $id_utente, $data);
     $stmt->execute();
     $stmt->close();
+
+
+
+               //logAzioni utente inserimento usufruito
+               $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+               $stmt->execute();
+               $stmt->store_result();
+               $stmt->bind_result($nomeUtenteLOG);
+               $stmt->fetch();
+               $stmt->close();
+               $idScrittura=$_SESSION['id'];
+               $data_attuale = date('d/m/Y');
+               $azione="Cancella richiesta utente";
+               $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+               $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+               $stmt->execute();
+               $stmt->close();
 }
 
 function cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data_fine)
 {
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
+
+
+                   //logAzioni utente inserimento usufruito
+                   $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
+                   $stmt->execute();
+                   $stmt->store_result();
+                   $stmt->bind_result($nomeUtenteLOG);
+                   $stmt->fetch();
+                   $stmt->close();
+                   $idScrittura=$_SESSION['id'];
+                   $data_attuale = date('d/m/Y');
+                   $azione="Cancella richiesta utente";
+                   $stmt = $mysqli->prepare("INSERT INTO logazioni (id_utente, data, tipologia, record) VALUES (?, ?, ?, ?)");
+                   $stmt->bind_param('ssss', $idScrittura, $data_attuale, $azione, $nomeUtenteLOG);
+                   $stmt->execute();
+                   $stmt->close();
 
     if (!$data_inizio_obj || !$data_fine_obj) {
         // Date non valide
