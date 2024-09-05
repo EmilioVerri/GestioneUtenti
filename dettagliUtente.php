@@ -2,6 +2,8 @@
 // Avvio della sessione e connessione al database
 // Avvio della sessione
 session_start();
+
+
 if (!isset($_SESSION['id'])) {
     header('Location: index.php');
     exit;
@@ -142,7 +144,7 @@ $giornoItaliano=convertiGiornoItaliano($giorno_settimana);
 
 
 
-
+    $nomeUtenteLOG="";
         //logAzioni utente inserimento richiesta
         $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
         $stmt->execute();
@@ -167,7 +169,7 @@ function inserisci_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $dat
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
 
 
-
+    $nomeUtenteLOG="";
            //logAzioni utente inserimento richiesta
            $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
            $stmt->execute();
@@ -208,7 +210,7 @@ function aggiorna_stato_richiesta($mysqli, $id_utente, $data, $stato)
 
 
 
-
+    $nomeUtenteLOG="";
            //logAzioni utente inserimento usufruito
            $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
            $stmt->execute();
@@ -230,7 +232,7 @@ function aggiorna_stato_richiesta_per_periodo($mysqli, $id_utente, $data_inizio,
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
 
-
+    $nomeUtenteLOG="";
                //logAzioni utente inserimento usufruito
                $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
                $stmt->execute();
@@ -269,7 +271,7 @@ function cancella_richiesta($mysqli, $id_utente, $data)
     $stmt->close();
 
 
-
+    $nomeUtenteLOG="";
                //logAzioni utente inserimento usufruito
                $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
                $stmt->execute();
@@ -291,7 +293,7 @@ function cancella_richiesta_per_periodo($mysqli, $id_utente, $data_inizio, $data
     $data_inizio_obj = DateTime::createFromFormat('Y-m-d', $data_inizio);
     $data_fine_obj = DateTime::createFromFormat('Y-m-d', $data_fine);
 
-
+    $nomeUtenteLOG="";
                    //logAzioni utente inserimento usufruito
                    $stmt = $mysqli->prepare("SELECT nome FROM utenti WHERE id= {$id_utente}");
                    $stmt->execute();
