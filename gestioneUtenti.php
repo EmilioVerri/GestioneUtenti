@@ -141,6 +141,25 @@ $stmt->fetch();
                 <?php
             }
             ?>
+            <!-- Card 5 -->
+                <!--<div>
+                    <a href="inserimentoRichieste.php">
+                        <div class="uk-card uk-card-hover uk-card-default uk-card-body">
+                            <h3 class="uk-card-title">Lista del personale</h3>
+                        </div>
+                    </a>
+                </div>-->
+                            
+            <!-- Card 6 -->
+                <!--<div>
+                    <a href="inserimentoRichieste.php">
+                        <div class="uk-card uk-card-hover uk-card-default uk-card-body">
+                            <h3 class="uk-card-title">Lista delle richieste</h3>
+                        </div>
+                    </a>
+                </div>-->
+
+
 
         </div>
     </div>
