@@ -142,13 +142,13 @@ $stmt->fetch();
             }
             ?>
             <!-- Card 5 -->
-                <!--<div>
-                    <a href="inserimentoRichieste.php">
+                <div>
+                    <a href="listaPersonale.php">
                         <div class="uk-card uk-card-hover uk-card-default uk-card-body">
                             <h3 class="uk-card-title">Lista del personale</h3>
                         </div>
                     </a>
-                </div>-->
+                </div>
                             
             <!-- Card 6 -->
                 <!--<div>
